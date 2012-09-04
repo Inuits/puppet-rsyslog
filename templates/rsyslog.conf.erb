@@ -120,7 +120,7 @@ local7.*						<%= local5 %>
 # Logging to remote servers
 # From rsyslog-3.21.5 the hostname entry can be replaced by $myhostname
 <% serverlist.slice(0..0).each do |syslog_server| -%>
-if $hostname == '<%= hostname %>' then                  @<%= syslog_server %>
+if $hostname == '<%= scope.lookupvar('::hostname') %>' then                  @<%= syslog_server %>
 <% end -%>
 <% serverlist.slice(1..-1).each do |syslog_server| -%>
 &                                                       @<%= syslog_server %>
