@@ -1,4 +1,4 @@
-#rsyslog v3 config file
+#rsyslog v5 config file
 
 # if you experience problems, check
 # http://www.rsyslog.com/troubleshoot for assistance
@@ -31,18 +31,12 @@ $ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
 $umask 0000
 
 
+
+# Include all config files in /etc/rsyslog.d/
+$IncludeConfig /etc/rsyslog.d/*.conf
+
 #### RULES ####
 #
-# Log all sems message to sems logfile
-:msg, regex, "<agent_name>.*<topic>EVENT</topic>"    @@SVC-CONMS:5333
-:msg, regex, "<agent_name>.*<topic>FATAL</topic>"    @@SVC-CONMS:5333
-:msg, regex, "<agent_name>.*<topic>CRITICAL</topic>" @@SVC-CONMS:5333
-:msg, regex, "<agent_name>.*<topic>MAJOR</topic>"    @@SVC-CONMS:5333
-:msg, regex, "<agent_name>.*<topic>CLEARED</topic>"  @@SVC-CONMS:5333
-
-# Don't log  any DMA snmp connections 
-
-:msg, contains, "Connection from UDP:" ~
 
 <%- unless rule.to_s.empty? then -%>
 <%= rule %>
