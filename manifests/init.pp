@@ -1,4 +1,4 @@
-define rsyslog::server($servers = '',$rule = '',
+class rsyslog($servers = '',$rule = '',
 $local2 = '',
 $local3 = '',
 $local4 = '',
