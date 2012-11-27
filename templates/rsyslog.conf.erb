@@ -1,20 +1,20 @@
-#rsyslog v5 config file
+# rsyslog v5 configuration file
 
-# if you experience problems, check
-# http://www.rsyslog.com/troubleshoot for assistance
+# For more information see /usr/share/doc/rsyslog-*/rsyslog_conf.html
+# If you experience problems, see http://www.rsyslog.com/doc/troubleshoot.html
 
 #### MODULES ####
 
-$ModLoad imuxsock.so    # provides support for local system logging (e.g. via logger command)
-$ModLoad imklog.so      # provides kernel logging support (previously done by rklogd)
-#$ModLoad immark.so     # provides --MARK-- message capability
+$ModLoad imuxsock    # provides support for local system logging (e.g. via logger command)
+$ModLoad imklog      # provides kernel logging support (previously done by rklogd)
+#$ModLoad immark     # provides --MARK-- message capability
 
 # Provides UDP syslog reception
-$ModLoad imudp.so
+$ModLoad imudp
 $UDPServerRun 514
 
 # Provides TCP syslog reception
-$ModLoad imtcp.so
+$ModLoad imtcp
 $InputTCPServerRun 514
 
 
