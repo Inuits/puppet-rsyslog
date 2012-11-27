@@ -29,7 +29,7 @@ $hostname = '') {
       notify  => Service['rsyslog'];
   }
 
-  if ($::osfamily == 'Debian' && $::lsbdistcodename == 'squeeze') {
+  if ($::osfamily == 'Debian' and $::lsbdistcodename == 'squeeze') {
     file{'/var/spool/rsyslog':
       ensure => directory,
       before => Service['rsyslog'],
