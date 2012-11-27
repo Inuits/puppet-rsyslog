@@ -110,6 +110,9 @@ local6.*						<%= local6 %>
 <%- end -%>
 <%- unless local7.to_s.empty? then -%>
 local7.*						<%= local7 %>
+<%- else -%>
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
 <%- end -%>
 
 
