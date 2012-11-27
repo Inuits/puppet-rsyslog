@@ -19,12 +19,12 @@ $ModLoad imtcp
 $InputTCPServerRun 514
 <%- else -%>
 # Provides UDP syslog reception
-$ModLoad imudp
-$UDPServerRun 514
+#$ModLoad imudp
+#$UDPServerRun 514
 
 # Provides TCP syslog reception
-$ModLoad imtcp
-$InputTCPServerRun 514
+#$ModLoad imtcp
+#$InputTCPServerRun 514
 <%- end -%>
 
 
