@@ -34,7 +34,7 @@ $hostname = '') {
       ensure => directory,
       owner  => 'root',
       group  => 'root',
-      mode   => '700',
+      mode   => '0700',
       before => Service['rsyslog'],
     }
   }
