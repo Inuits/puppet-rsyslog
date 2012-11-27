@@ -24,8 +24,15 @@ $hostname = '') {
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      content => template('rsyslog/rsyslog.conf.erb'),
+      content => template("rsyslog/rsyslog.conf.${::osfamily}.erb"),
       alias   => 'rsyslog.conf',
       notify  => Service['rsyslog'];
+  }
+
+  if ($::osfamily == 'Debian' && $::lsbdistcodename == 'squeeze') {
+    file{'/var/spool/rsyslog':
+      ensure => directory,
+      before => Service['rsyslog'],
+    }
   }
 }
