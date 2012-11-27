@@ -32,6 +32,9 @@ $hostname = '') {
   if ($::osfamily == 'Debian' and $::lsbdistcodename == 'squeeze') {
     file{'/var/spool/rsyslog':
       ensure => directory,
+      owner  => 'root',
+      group  => 'root',
+      mode   => '700',
       before => Service['rsyslog'],
     }
   }
