@@ -9,6 +9,7 @@ $ModLoad imuxsock # provides support for local system logging (e.g. via logger c
 $ModLoad imklog   # provides kernel logging support (previously done by rklogd)
 #$ModLoad immark  # provides --MARK-- message capability
 
+<%- if servers.empty? then -%>
 # Provides UDP syslog reception
 $ModLoad imudp
 $UDPServerRun 514
@@ -16,6 +17,15 @@ $UDPServerRun 514
 # Provides TCP syslog reception
 $ModLoad imtcp
 $InputTCPServerRun 514
+<%- else -%>
+# Provides UDP syslog reception
+$ModLoad imudp
+$UDPServerRun 514
+
+# Provides TCP syslog reception
+$ModLoad imtcp
+$InputTCPServerRun 514
+<%- end -%>
 
 
 #### GLOBAL DIRECTIVES ####
@@ -102,6 +112,8 @@ local6.*						<%= local6 %>
 local7.*						<%= local7 %>
 <%- end -%>
 
+
+# ### begin forwarding rule ###
 # The statement between the begin ... end define a SINGLE forwarding
 # rule. They belong together, do NOT split them. If you create multiple
 # forwarding rules, duplicate the whole block!
@@ -137,5 +149,5 @@ $ActionQueueType LinkedList
 $ActionResumeRetryCount -1
 *.* @<%= syslog_server %>
 ### end of the forwarding rule ###
-<% end %>
-<% end %>
+<% end -%>
+<% end -%>
