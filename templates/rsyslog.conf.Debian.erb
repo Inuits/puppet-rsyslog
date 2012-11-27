@@ -51,6 +51,11 @@ $DirCreateMode 0755
 $Umask 0022
 
 #
+# Where to place spool and state files
+#
+$WorkDirectory /var/spool/rsyslog
+
+#
 # Include all config files in /etc/rsyslog.d/
 #
 $IncludeConfig /etc/rsyslog.d/*.conf
