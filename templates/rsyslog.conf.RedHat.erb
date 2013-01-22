@@ -1,21 +1,31 @@
-#rsyslog v5 config file
+# rsyslog v5 configuration file
 
-# if you experience problems, check
-# http://www.rsyslog.com/troubleshoot for assistance
+# For more information see /usr/share/doc/rsyslog-*/rsyslog_conf.html
+# If you experience problems, see http://www.rsyslog.com/doc/troubleshoot.html
 
 #### MODULES ####
 
-$ModLoad imuxsock.so    # provides support for local system logging (e.g. via logger command)
-$ModLoad imklog.so      # provides kernel logging support (previously done by rklogd)
-#$ModLoad immark.so     # provides --MARK-- message capability
+$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
+$ModLoad imklog   # provides kernel logging support (previously done by rklogd)
+#$ModLoad immark  # provides --MARK-- message capability
 
+<%- if servers.empty? then -%>
 # Provides UDP syslog reception
-$ModLoad imudp.so
+$ModLoad imudp
 $UDPServerRun 514
 
 # Provides TCP syslog reception
-$ModLoad imtcp.so
+$ModLoad imtcp
 $InputTCPServerRun 514
+<%- else -%>
+# Provides UDP syslog reception
+#$ModLoad imudp
+#$UDPServerRun 514
+
+# Provides TCP syslog reception
+#$ModLoad imtcp
+#$InputTCPServerRun 514
+<%- end -%>
 
 
 #### GLOBAL DIRECTIVES ####
@@ -30,13 +40,16 @@ $ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
 # make sure nothing interferes with the FileCreateMode definitions
 $umask 0000
 
-
+#
+# Where to place spool and state files
+#
+$WorkDirectory /var/lib/rsyslog
 
 # Include all config files in /etc/rsyslog.d/
 $IncludeConfig /etc/rsyslog.d/*.conf
 
+
 #### RULES ####
-#
 
 <%- unless rule.to_s.empty? then -%>
 <%= rule %>
@@ -96,12 +109,33 @@ local4.*						<%= local4 %>
 local5.*						<%= local5 %>
 <%- end -%>
 <%- unless local6.to_s.empty? then -%>
-local6.*						<%= local5 %>
+local6.*						<%= local6 %>
 <%- end -%>
 <%- unless local7.to_s.empty? then -%>
-local7.*						<%= local5 %>
+local7.*						<%= local7 %>
+<%- else -%>
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
 <%- end -%>
 
+
+# ### begin forwarding rule ###
+# The statement between the begin ... end define a SINGLE forwarding
+# rule. They belong together, do NOT split them. If you create multiple
+# forwarding rules, duplicate the whole block!
+# Remote Logging (we use TCP for reliable delivery)
+#
+# An on-disk queue is created for this action. If the remote host is
+# down, messages are spooled to disk and sent when it is up again.
+#$WorkDirectory /var/lib/rsyslog # where to place spool files
+#$ActionQueueFileName fwdRule1 # unique name prefix for spool files
+#$ActionQueueMaxDiskSpace 1g   # 1gb space limit (use as much as possible)
+#$ActionQueueSaveOnShutdown on # save messages to disk on shutdown
+#$ActionQueueType LinkedList   # run asynchronously
+#$ActionResumeRetryCount -1    # infinite retries if host is down
+# remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
+#*.* @@remote-host:514
+# ### end of the forwarding rule ###
 <%- unless servers.empty? then -%>
 <%- if servers.type.to_s.eql? "String" then
      array = [];
@@ -111,12 +145,15 @@ local7.*						<%= local5 %>
      serverlist = servers;
  end -%>
 
-# Logging to remote servers
-# From rsyslog-3.21.5 the hostname entry can be replaced by $myhostname
-<% serverlist.slice(0..0).each do |syslog_server| -%>
-if $hostname == '<%= scope.lookupvar('::hostname') %>' then                  @<%= syslog_server %>
-<% end -%>
-<% serverlist.slice(1..-1).each do |syslog_server| -%>
-&                                                       @<%= syslog_server %>
+<% serverlist.each do |syslog_server| -%>
+### begin forwarding rule ###
+$WorkDirectory /var/lib/rsyslog
+$ActionQueueFileName <%= syslog_server %>
+$ActionQueueMaxDiskSpace 1g
+$ActionQueueSaveOnShutdown on
+$ActionQueueType LinkedList
+$ActionResumeRetryCount -1
+*.* @<%= syslog_server %>
+### end of the forwarding rule ###
 <% end -%>
 <% end -%>
