@@ -145,7 +145,7 @@ local7.*                                                /var/log/boot.log
      serverlist = servers;
  end -%>
 
-<% @serverlist.each do |syslog_server| -%>
+<% serverlist.each do |syslog_server| -%>
 ### begin forwarding rule ###
 $WorkDirectory /var/lib/rsyslog
 $ActionQueueFileName <%= @syslog_server %>
