@@ -9,7 +9,7 @@ $ModLoad imuxsock # provides support for local system logging (e.g. via logger c
 $ModLoad imklog   # provides kernel logging support (previously done by rklogd)
 #$ModLoad immark  # provides --MARK-- message capability
 
-<%- if servers.empty? then -%>
+<%- if @servers.empty? then -%>
 # Provides UDP syslog reception
 $ModLoad imudp
 $UDPServerRun 514
@@ -51,7 +51,7 @@ $IncludeConfig /etc/rsyslog.d/*.conf
 
 #### RULES ####
 
-<%- unless rule.to_s.empty? then -%>
+<%- unless @rule.to_s.empty? then -%>
 <%= rule %>
 <%- end -%>
 # Log all kernel messages to the console.
@@ -61,22 +61,22 @@ $IncludeConfig /etc/rsyslog.d/*.conf
 # Log anything (except mail) of level info or higher.
 # Don't log private authentication messages!
 *.info;\
-<%- unless local2.to_s.empty? then -%>
+<%- unless @local2.to_s.empty? then -%>
 local2.none;\
 <%- end -%>
-<%- unless local3.to_s.empty? then -%>
+<%- unless @local3.to_s.empty? then -%>
 local3.none;\
 <%- end -%>
-<%- unless local4.to_s.empty? then -%>
+<%- unless @local4.to_s.empty? then -%>
 local4.none;\
 <%- end -%>
-<%- unless local5.to_s.empty? then -%>
+<%- unless @local5.to_s.empty? then -%>
 local5.none;\
 <%- end -%>
-<%- unless local6.to_s.empty? then -%>
+<%- unless @local6.to_s.empty? then -%>
 local6.none;\
 <%- end -%>
-<%- unless local7.to_s.empty? then -%>
+<%- unless @local7.to_s.empty? then -%>
 local7.none;\
 <%- end -%>
 mail.none;authpriv.none;cron.none;                /var/log/messages
@@ -96,23 +96,23 @@ cron.*                                                  /var/log/cron
 # Save news errors of level crit and higher in a special file.
 uucp,news.crit                                          /var/log/spooler
 
-<%- unless local2.to_s.empty? then -%>
-local2.*						<%= local2 %>
+<%- unless @local2.to_s.empty? then -%>
+local2.*						<%= @local2 %>
 <%- end -%>
-<%- unless local3.to_s.empty? then -%>
-local3.*						<%= local3 %>
+<%- unless @local3.to_s.empty? then -%>
+local3.*						<%= @local3 %>
 <%- end -%>
-<%- unless local4.to_s.empty? then -%>
-local4.*						<%= local4 %>
+<%- unless @local4.to_s.empty? then -%>
+local4.*						<%= @local4 %>
 <%- end -%>
-<%- unless local5.to_s.empty? then -%>
-local5.*						<%= local5 %>
+<%- unless @local5.to_s.empty? then -%>
+local5.*						<%= @local5 %>
 <%- end -%>
-<%- unless local6.to_s.empty? then -%>
-local6.*						<%= local6 %>
+<%- unless @local6.to_s.empty? then -%>
+local6.*						<%= @local6 %>
 <%- end -%>
-<%- unless local7.to_s.empty? then -%>
-local7.*						<%= local7 %>
+<%- unless @local7.to_s.empty? then -%>
+local7.*						<%= @local7 %>
 <%- else -%>
 # Save boot messages also to boot.log
 local7.*                                                /var/log/boot.log
@@ -136,24 +136,24 @@ local7.*                                                /var/log/boot.log
 # remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
 #*.* @@remote-host:514
 # ### end of the forwarding rule ###
-<%- unless servers.empty? then -%>
-<%- if servers.type.to_s.eql? "String" then
+<%- unless @servers.empty? then -%>
+<%- if @servers.type.to_s.eql? "String" then
      array = [];
      array.push(servers);
      serverlist = array;
-   elsif servers.type.to_s.eql? "Array" then
+   elsif @servers.type.to_s.eql? "Array" then
      serverlist = servers;
  end -%>
 
-<% serverlist.each do |syslog_server| -%>
+<% @serverlist.each do |syslog_server| -%>
 ### begin forwarding rule ###
 $WorkDirectory /var/lib/rsyslog
-$ActionQueueFileName <%= syslog_server %>
+$ActionQueueFileName <%= @syslog_server %>
 $ActionQueueMaxDiskSpace 1g
 $ActionQueueSaveOnShutdown on
 $ActionQueueType LinkedList
 $ActionResumeRetryCount -1
-*.* @<%= syslog_server %>
+*.* @<%= @syslog_server %>
 ### end of the forwarding rule ###
 <% end -%>
 <% end -%>
