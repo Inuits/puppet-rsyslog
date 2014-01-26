@@ -138,11 +138,11 @@ local7.*                                                /var/log/boot.log
 # ### end of the forwarding rule ###
 <%- unless @servers.empty? then -%>
 <%- if @servers.type.to_s.eql? "String" then
-     array = [];
-     array.push(servers);
-     serverlist = array;
+     array = []
+     array.push(@servers)
+     serverlist = array
    elsif @servers.type.to_s.eql? "Array" then
-     serverlist = servers;
+     serverlist = servers
  end -%>
 
 <% serverlist.each do |syslog_server| -%>
