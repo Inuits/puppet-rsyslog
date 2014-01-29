@@ -136,24 +136,24 @@ local7.*                                                /var/log/boot.log
 # remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
 #*.* @@remote-host:514
 # ### end of the forwarding rule ###
-<%- unless @servers.empty? then -%>
-<%- if @servers.type.to_s.eql? "String" then
-     array = []
-     array.push(@servers)
-     serverlist = array
-   elsif @servers.type.to_s.eql? "Array" then
-     serverlist = servers
+<%- unless servers.empty? then -%>
+<%- if servers.type.to_s.eql? "String" then
+     array = [];
+     array.push(servers);
+     serverlist = array;
+    elsif servers.type.to_s.eql? "Array" then
+      serverlist = servers;
  end -%>
 
 <% serverlist.each do |syslog_server| -%>
-### begin forwarding rule ###
-$WorkDirectory /var/lib/rsyslog
-$ActionQueueFileName <%= @syslog_server %>
-$ActionQueueMaxDiskSpace 1g
-$ActionQueueSaveOnShutdown on
-$ActionQueueType LinkedList
-$ActionResumeRetryCount -1
-*.* @<%= @syslog_server %>
-### end of the forwarding rule ###
-<% end -%>
-<% end -%>
+    ### begin forwarding rule ###
+    $WorkDirectory /var/lib/rsyslog
+    $ActionQueueFileName <%= syslog_server %>
+    $ActionQueueMaxDiskSpace 1g
+    $ActionQueueSaveOnShutdown on
+    $ActionQueueType LinkedList
+    $ActionResumeRetryCount -1
+    *.* @<%= syslog_server %>
+    #### end of the forwarding rule ###
+    <% end -%>
+ <% end -%>
