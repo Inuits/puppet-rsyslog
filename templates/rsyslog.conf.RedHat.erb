@@ -136,13 +136,13 @@ local7.*                                                /var/log/boot.log
 # remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
 #*.* @@remote-host:514
 # ### end of the forwarding rule ###
-<%- unless servers.empty? then -%>
-<%- if servers.type.to_s.eql? "String" then
+<%- unless @servers.empty? then -%>
+<%- if @servers.class.to_s.eql? "String" then
      array = [];
-     array.push(servers);
+     array.push(@servers);
      serverlist = array;
-    elsif servers.type.to_s.eql? "Array" then
-      serverlist = servers;
+    elsif @servers.class.to_s.eql? "Array" then
+      serverlist = @servers;
  end -%>
 
 <% serverlist.each do |syslog_server| -%>
